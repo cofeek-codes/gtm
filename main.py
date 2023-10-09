@@ -5,14 +5,13 @@ import subprocess
 import os
 
 
-
 def download():
-    converted_files_dir = os.getcwd() + "/converted"
-    binary_path = os.getcwd() + "/binaries/yt-dlp"
-    if not  os.path.exists(converted_files_dir):
-       os.mkdir(converted_files_dir)
-       
-    os.chdir(converted_files_dir)
+    CONVERTED_FILES_DIR = os.getcwd() + "/converted"
+    BINARY_PATH = os.getcwd() + "/binaries/yt-dlp"
+    if not os.path.exists(CONVERTED_FILES_DIR):
+        os.mkdir(CONVERTED_FILES_DIR)
+
+    os.chdir(CONVERTED_FILES_DIR)
 
     if len(sys.argv) < 2:
         print("no url provided")
@@ -21,30 +20,34 @@ def download():
     else:
         link = sys.argv[1]
 
-        subprocess.call([f"{binary_path} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {link}"], shell=True)
+        subprocess.call(
+            [f"{BINARY_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {link}"], shell=True)
 
 
 def main():
     download()
     convert_mp4_to_mp3()
-        
+
 
 def convert_mp4_to_mp3():
     dir_path = Path(os.getcwd())
-    video_extensions = [".wedm", ".mp4", ".mkv", ".flv", ".wmv", ".avi", ".mpg", ".mpeg"]
+    video_extensions = [".wedm", ".mp4", ".mkv",
+                        ".flv", ".wmv", ".avi", ".mpg", ".mpeg"]
 
-    video_files = [str(item) for item in dir_path.iterdir() if item.suffix in video_extensions]
+    video_files = [str(item) for item in dir_path.iterdir()
+                   if item.suffix in video_extensions]
 
     print(video_files)
-    output_filename = sys.argv[2] if len(sys.argv) > 3 and not sys.argv[2].startswith("-") else "output" 
-    subprocess.call([f"ffmpeg -i {re.escape(video_files[0])} {output_filename}.mp3"], shell=True)
+    output_filename = sys.argv[2] if len(
+        sys.argv) > 3 and not sys.argv[2].startswith("-") else re.escape(video_files[0])
+    subprocess.call(
+        [f"ffmpeg -i {re.escape(video_files[0])} {output_filename}.mp3"], shell=True)
     if not "-k" in sys.argv:
-        
+
         print(f"removing original file: {video_files[0]} -k to keep")
         os.remove(video_files[0])
     else:
         print(f"keeping original file: {video_files[0]}")
-
 
 
 def print_usage():
@@ -65,6 +68,7 @@ flags:
         
         """
     )
-        
+
+
 if __name__ == "__main__":
     main()
