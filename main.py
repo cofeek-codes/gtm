@@ -16,6 +16,7 @@ def download():
 
     if len(sys.argv) < 2:
         print("no url provided")
+        print_usage()
         os._exit(1)
     else:
         link = sys.argv[1]
@@ -43,6 +44,27 @@ def convert_mp4_to_mp3():
         os.remove(video_files[0])
     else:
         print(f"keeping original file: {video_files[0]}")
-            
+
+
+
+def print_usage():
+    print("incorrect usage")
+    print(
+        """
+
+
+Usage:
+
+gtm <youtube_url> (optional) <converted_filename> <flags>
+
+converted_filename: (optional) | default "output"
+
+flags:
+	-k: keep downloaded mp4 file from deletion
+
+        
+        """
+    )
+        
 if __name__ == "__main__":
     main()
