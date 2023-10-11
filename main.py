@@ -6,8 +6,8 @@ import os
 
 
 CONVERTED_FILES_DIR = os.getcwd() + "/converted"
-BINARY_YTDLP_PATH = os.getcwd() + "/binaries/yt-dlp"
-BINARY_FFMPEG_PATH = os.getcwd() + "/binaries/ffmpeg"
+BINARY_YTDLP_PATH = os.getcwd() + "/binaries/unix/yt-dlp"
+BINARY_FFMPEG_PATH = os.getcwd() + "/binaries/unix/ffmpeg"
 
 
 def download():
