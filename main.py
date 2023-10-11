@@ -23,13 +23,18 @@ def download():
     else:
         link = sys.argv[1]
 
-        subprocess.call(
+        return subprocess.call(
             [f"{BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {link}"], shell=True)
 
 
 def main():
-    download()
-    convert_mp4_to_mp3()
+    download_success =  download()
+    if download_success == 0:
+         
+        convert_mp4_to_mp3()
+    else:
+       print("error downloading file")
+       os._exit(1)
 
 
 def convert_mp4_to_mp3():
