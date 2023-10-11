@@ -5,9 +5,12 @@ import subprocess
 import os
 
 
+CONVERTED_FILES_DIR = os.getcwd() + "/converted"
+BINARY_YTDLP_PATH = os.getcwd() + "/binaries/yt-dlp"
+BINARY_FFMPEG_PATH = os.getcwd() + "/binaries/ffmpeg"
+
+
 def download():
-    CONVERTED_FILES_DIR = os.getcwd() + "/converted"
-    BINARY_PATH = os.getcwd() + "/binaries/yt-dlp"
     if not os.path.exists(CONVERTED_FILES_DIR):
         os.mkdir(CONVERTED_FILES_DIR)
 
@@ -21,7 +24,7 @@ def download():
         link = sys.argv[1]
 
         subprocess.call(
-            [f"{BINARY_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {link}"], shell=True)
+            [f"{BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {link}"], shell=True)
 
 
 def main():
@@ -41,7 +44,7 @@ def convert_mp4_to_mp3():
     output_filename = sys.argv[2] if len(
         sys.argv) > 3 and not sys.argv[2].startswith("-") else re.escape(video_files[0])
     subprocess.call(
-        [f"ffmpeg -i {re.escape(video_files[0])} {output_filename}.mp3"], shell=True)
+        [f"{BINARY_FFMPEG_PATH} -i {re.escape(video_files[0])} {output_filename}.mp3"], shell=True)
     if not "-k" in sys.argv:
 
         print(f"removing original file: {video_files[0]} -k to keep")
