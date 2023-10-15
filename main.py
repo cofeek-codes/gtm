@@ -1,83 +1,25 @@
-import re
-from pathlib import Path
-import sys
-import subprocess
+import lib.gtm as gtm
 import os
-
-platform_binary_dir = "win" if sys.platform == "win32" else "unix"
-platform_binary_ext = ".exe" if sys.platform == "win32" else ""
-
-CONVERTED_FILES_DIR = os.getcwd() + "/converted"
-BINARY_YTDLP_PATH = os.getcwd() + f"/binaries/{platform_binary_dir}/yt-dlp{platform_binary_ext}"
-BINARY_FFMPEG_PATH = os.getcwd() + f"/binaries/{platform_binary_dir}/ffmpeg{platform_binary_ext}"
-print("platform " + BINARY_FFMPEG_PATH, BINARY_YTDLP_PATH)
-
-def download():
-    if not os.path.exists(CONVERTED_FILES_DIR):
-        os.mkdir(CONVERTED_FILES_DIR)
-
-    os.chdir(CONVERTED_FILES_DIR)
-
-    if len(sys.argv) < 2:
-        print("no url provided")
-        print_usage()
-        os._exit(1)
-    else:
-        link = sys.argv[1]
-
-        return subprocess.call(
-            [f"{BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {link}"], shell=True)
+import sys
+from ui import ui
 
 
 def main():
-    download_success =  download()
-    if download_success == 0:
-         
-        convert_mp4_to_mp3()
+
+    gui_mode_enabled = len(sys.argv) == 2 and "-ui" in sys.argv
+
+    if gui_mode_enabled:
+        ui.display_gui()
     else:
-       print("error downloading file")
-       os._exit(1)
 
+        # cli
+        return_code = gtm.download()
 
-def convert_mp4_to_mp3():
-    dir_path = Path(os.getcwd())
-    video_extensions = [".wedm", ".mp4", ".mkv",
-                        ".flv", ".wmv", ".avi", ".mpg", ".mpeg"]
-
-    video_files = [str(item) for item in dir_path.iterdir()
-                   if item.suffix in video_extensions]
-
-    print(video_files)
-    output_filename = sys.argv[2] if len(
-        sys.argv) > 3 and not sys.argv[2].startswith("-") else re.escape(video_files[0])
-    subprocess.call(
-        [f"{BINARY_FFMPEG_PATH} -i {re.escape(video_files[0])} {output_filename}.mp3"], shell=True)
-    if not "-k" in sys.argv:
-
-        print(f"removing original file: {video_files[0]} -k to keep")
-        os.remove(video_files[0])
-    else:
-        print(f"keeping original file: {video_files[0]}")
-
-
-def print_usage():
-    print("incorrect usage")
-    print(
-        """
-
-
-Usage:
-
-gtm <youtube_url> (optional) <converted_filename> <flags>
-
-converted_filename: (optional) | default "output"
-
-flags:
-	-k: keep downloaded mp4 file from deletion
-
-        
-        """
-    )
+        if return_code != 0:
+            print("error downloading file")
+            os._exit(1)
+        else:
+            gtm.convert_mp4_to_mp3()
 
 
 if __name__ == "__main__":
