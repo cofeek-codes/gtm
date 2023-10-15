@@ -32,7 +32,8 @@ def download():
             [f"{_BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {link}"], shell=True)
 
 
-def convert_mp4_to_mp3():
+def convert_mp4_to_mp3(output_path_set = ""):
+    
     dir_path = Path(os.getcwd())
     video_extensions = [".wedm", ".mp4", ".mkv",
                         ".flv", ".wmv", ".avi", ".mpg", ".mpeg"]
@@ -41,6 +42,9 @@ def convert_mp4_to_mp3():
                    if item.suffix in video_extensions]
 
     print(video_files)
+
+    # TODO: output file path from _get_output_filepath
+
     output_filename = sys.argv[2] if len(
         sys.argv) > 3 and not sys.argv[2].startswith("-") else re.escape(video_files[0])
     subprocess.call(
@@ -71,3 +75,17 @@ flags:
         
         """
     )
+
+
+def print_error(error):
+    print('\033[91m' + error + '\033[0m')
+
+
+def _get_output_filepath(filepath_set, initial_filepath):
+
+    is_ui_mode = "-ui" in sys.argv
+
+    filepath_res = initial_filepath if initial_filepath != "" else sys.argv[2] if len(
+        sys.argv) > 3 and not sys.argv[2].startswith("-") else re.escape(initial_filepath)
+
+    return filepath_res
