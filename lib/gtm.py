@@ -28,8 +28,8 @@ def download():
     else:
         link = sys.argv[1]
 
-        return subprocess.call(
-            [f"{_BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {link}"], shell=True)
+        return subprocess.Popen(
+            [f"{_BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {link}"], stdin=subprocess.PIPE)
 
 
 def convert_mp4_to_mp3(output_path_set = ""):
@@ -47,8 +47,8 @@ def convert_mp4_to_mp3(output_path_set = ""):
 
     output_filename = sys.argv[2] if len(
         sys.argv) > 3 and not sys.argv[2].startswith("-") else re.escape(video_files[0])
-    subprocess.call(
-        [f"{_BINARY_FFMPEG_PATH} -i {re.escape(video_files[0])} {output_filename}.mp3"], shell=True)
+    subprocess.Popen(
+        [f"{_BINARY_FFMPEG_PATH} -i {re.escape(video_files[0])} {output_filename}.mp3"], stdin=subprocess.PIPE)
     if not "-k" in sys.argv:
 
         print(f"removing original file: {video_files[0]} -k to keep")
