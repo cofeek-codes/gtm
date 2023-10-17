@@ -1,3 +1,4 @@
+import subprocess
 import PySimpleGUI as ui
 import lib.gtm as gtm
 
@@ -52,5 +53,8 @@ def display_gui():
             # gtm.print_error("example error")
 
             # TODO: test it
-            download_code = gtm.download()
-            
+            # download_code = gtm.download()
+            process_test()
+
+def process_test():
+    subprocess.Popen("echo 'hello world'", stdin=subprocess.PIPE)
