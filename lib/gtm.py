@@ -14,24 +14,32 @@ _BINARY_FFMPEG_PATH = os.getcwd(
 ) + f"/binaries/{_platform_binary_dir}/ffmpeg{_platform_binary_ext}"
 print("platform " + _BINARY_FFMPEG_PATH, _BINARY_YTDLP_PATH)
 
+# TODO: probuably rename arg
+def download(gui_link = None):
 
-def download():
-    if not os.path.exists(_CONVERTED_FILES_DIR):
-        os.mkdir(_CONVERTED_FILES_DIR)
+    is_gui_mode = len(sys.argv) == 2 and "-ui" in sys.argv
 
-    os.chdir(_CONVERTED_FILES_DIR)
+    if not is_gui_mode:
+        
+        if not os.path.exists(_CONVERTED_FILES_DIR):
+            os.mkdir(_CONVERTED_FILES_DIR)
 
-    if len(sys.argv) < 2:
-        print("no url provided")
-        print_usage()
-        os._exit(1)
+        os.chdir(_CONVERTED_FILES_DIR)
+
+        if len(sys.argv) < 2:
+            print("no url provided")
+            print_usage()
+            os._exit(1)
+        else:
+            link = sys.argv[1]
+
+            return subprocess.Popen(
+                f"{_BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {link}".split(' '), stdin=subprocess.PIPE)
     else:
-        link = sys.argv[1]
-
         return subprocess.Popen(
-            [f"{_BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {link}"], stdin=subprocess.PIPE)
+                f"{_BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {gui_link}".split(' '), stdin=subprocess.PIPE)
 
-
+        
 def convert_mp4_to_mp3(output_path_set = ""):
     
     dir_path = Path(os.getcwd())
@@ -47,8 +55,8 @@ def convert_mp4_to_mp3(output_path_set = ""):
 
     output_filename = sys.argv[2] if len(
         sys.argv) > 3 and not sys.argv[2].startswith("-") else re.escape(video_files[0])
-    subprocess.Popen(
-        [f"{_BINARY_FFMPEG_PATH} -i {re.escape(video_files[0])} {output_filename}.mp3"], stdin=subprocess.PIPE)
+    ffmpeg_process_returncode = subprocess.Popen(
+        f"{_BINARY_FFMPEG_PATH} -i {re.escape(video_files[0])} {output_filename}.mp3".split(' '), stdin=subprocess.PIPE)
     if not "-k" in sys.argv:
 
         print(f"removing original file: {video_files[0]} -k to keep")
@@ -56,6 +64,7 @@ def convert_mp4_to_mp3(output_path_set = ""):
     else:
         print(f"keeping original file: {video_files[0]}")
 
+    return ffmpeg_process_returncode
 
 def print_usage():
     print("incorrect usage")

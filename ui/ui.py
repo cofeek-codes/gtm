@@ -1,5 +1,7 @@
 import subprocess
+
 import PySimpleGUI as ui
+
 import lib.gtm as gtm
 
 _UI_EVENT_CONVERT = "-CONVERT-"
@@ -54,7 +56,18 @@ def display_gui():
 
             # TODO: test it
             # download_code = gtm.download()
-            process_test()
 
+            # download
+            
+            try:
+                result = gtm.download(values[_UI_KEY_URL])
+                if result.returncode != 0:
+                    print("Subprocess Error:", result.stderr)
+            except Exception as e:
+                print("Call  Error:", e)
+
+                # convert call
+                
+            
 def process_test():
-    subprocess.Popen("echo 'hello world'", stdin=subprocess.PIPE)
+    return subprocess.Popen(["echo", "'hello world'"], stdin=subprocess.PIPE)
