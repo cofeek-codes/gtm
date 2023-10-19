@@ -1,8 +1,11 @@
+import shutil
 import re
 from pathlib import Path
 import sys
 import subprocess
 import os
+
+is_gui_mode = len(sys.argv) == 2 and "-ui" in sys.argv
 
 _platform_binary_dir = "win" if sys.platform == "win32" else "unix"
 _platform_binary_ext = ".exe" if sys.platform == "win32" else ""
@@ -17,7 +20,6 @@ print("platform " + _BINARY_FFMPEG_PATH, _BINARY_YTDLP_PATH)
 # TODO: probuably rename arg
 def download(gui_link = None):
 
-    is_gui_mode = len(sys.argv) == 2 and "-ui" in sys.argv
 
     if not is_gui_mode:
         
@@ -40,7 +42,7 @@ def download(gui_link = None):
                 f"{_BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {gui_link}".split(' '), stdin=subprocess.PIPE)
 
         
-def convert_mp4_to_mp3(output_path_set = ""):
+def convert_mp4_to_mp3(gui_path = None):
     
     dir_path = Path(os.getcwd())
     video_extensions = [".wedm", ".mp4", ".mkv",
@@ -52,11 +54,23 @@ def convert_mp4_to_mp3(output_path_set = ""):
     print(video_files)
 
     # TODO: output file path from _get_output_filepath
+    print("video_files")
+    print(video_files)
 
-    output_filename = sys.argv[2] if len(
-        sys.argv) > 3 and not sys.argv[2].startswith("-") else re.escape(video_files[0])
+    output_filename = _get_output_filepath(video_files[0])                                       
     ffmpeg_process_returncode = subprocess.Popen(
         f"{_BINARY_FFMPEG_PATH} -i {re.escape(video_files[0])} {output_filename}.mp3".split(' '), stdin=subprocess.PIPE)
+
+    _AUDIO_EXTENSION = ".mp3"
+    audio_files = [str(item) for item in dir_path.iterdir()
+                   if item.suffix == _AUDIO_EXTENSION]
+    print("audio_files")
+    print(audio_files)
+    
+    converted_file = audio_files[0]
+    print(converted_file)
+    if gui_path != None:
+        shutil.move(converted_file, gui_path)
     if not "-k" in sys.argv:
 
         print(f"removing original file: {video_files[0]} -k to keep")
@@ -83,18 +97,15 @@ flags:
 
         
         """
+
     )
 
 
 def print_error(error):
     print('\033[91m' + error + '\033[0m')
 
+def _get_output_filepath(initial_filepath):
+    output_filename = sys.argv[2] if len(
+        sys.argv) > 3 and not sys.argv[2].startswith("-") else initial_filepath
 
-def _get_output_filepath(filepath_set, initial_filepath):
-
-    is_ui_mode = "-ui" in sys.argv
-
-    filepath_res = initial_filepath if initial_filepath != "" else sys.argv[2] if len(
-        sys.argv) > 3 and not sys.argv[2].startswith("-") else re.escape(initial_filepath)
-
-    return filepath_res
+    return output_filename

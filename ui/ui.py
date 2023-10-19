@@ -52,22 +52,24 @@ def display_gui():
         if event == ui.WINDOW_CLOSED:
             break
         elif event == _UI_EVENT_CONVERT:
-            # gtm.print_error("example error")
 
-            # TODO: test it
-            # download_code = gtm.download()
-
-            # download
+            # download call
             
-            try:
-                result = gtm.download(values[_UI_KEY_URL])
-                if result.returncode != 0:
-                    print("Subprocess Error:", result.stderr)
-            except Exception as e:
-                print("Call  Error:", e)
+            # try:
+            #     result = gtm.download(values[_UI_KEY_URL])
+            #     if result.returncode != 0:
+            #         print("Subprocess Error:", result.stderr)
+            # except Exception as e:
+            #     print("Call  Error:", e)
 
-                # convert call
-                
+            #     # convert call
+                try:
+                    result = gtm.convert_mp4_to_mp3(values[_UI_KEY_FOLDER])
+                    if result.returncode != 0:
+                        print("Subprocess Error:", result.stderr)
+                except Exception as e:
+                    print("Call  Error:", e)
+
             
 def process_test():
     return subprocess.Popen(["echo", "'hello world'"], stdin=subprocess.PIPE)
