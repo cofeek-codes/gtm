@@ -58,9 +58,10 @@ def display_gui():
 
             try:
                 download_process_result = gtm.download(values[_UI_KEY_URL])
-                if download_process_result.returncode != 0:
+                if download_process_result != 0:
+                    print(download_process_result.returncode)
                     print("error downloading file")
-                    os._exit(1)
+                    # TODO: check via check_downloaded_files in download
                 else:
 
                     convert_process_result = gtm.convert_mp4_to_mp3(
@@ -78,5 +79,3 @@ def display_gui():
                 #     print("Convert Call  Error:", e)
 
 
-def process_test():
-    return subprocess.Popen(["echo", "'hello world'"], stdin=subprocess.PIPE)

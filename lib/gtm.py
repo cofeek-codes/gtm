@@ -5,6 +5,11 @@ import sys
 import subprocess
 import os
 
+
+video_extensions = [".wedm", ".mp4", ".mkv",
+                        ".flv", ".wmv", ".avi", ".mpg", ".mpeg"]
+
+
 is_gui_mode = len(sys.argv) == 2 and "-ui" in sys.argv
 
 _platform_binary_dir = "win" if sys.platform == "win32" else "unix"
@@ -41,7 +46,9 @@ def download(gui_link=None):
 
             return subprocess.Popen(
                 f"{_BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {link}", stdin=subprocess.PIPE)
-    # gui mode
+
+          
+            # gui mode
     else:
         print("gui link")
         print(gui_link)
@@ -59,12 +66,12 @@ def download(gui_link=None):
 def convert_mp4_to_mp3(gui_path=None):
 
     dir_path = Path(_CONVERTED_FILES_DIR)
-    video_extensions = [".wedm", ".mp4", ".mkv",
-                        ".flv", ".wmv", ".avi", ".mpg", ".mpeg"]
 
+    
     video_files = [str(item) for item in dir_path.iterdir()
                    if item.suffix in video_extensions]
 
+    
     print(os.getcwd())
     print(video_files)
 
@@ -74,6 +81,19 @@ def convert_mp4_to_mp3(gui_path=None):
 def _postconvert():
     print("postconvert executed")
 
+
+
+def check_downloaded_files():
+    dir_path = Path(_CONVERTED_FILES_DIR)
+
+    global video_extensions
+
+    
+    video_files = [str(item) for item in dir_path.iterdir()
+                   if item.suffix in video_extensions]
+
+    
+    return len(video_files)
 
 def print_usage():
     print("incorrect usage")
