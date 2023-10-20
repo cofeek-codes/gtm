@@ -10,6 +10,9 @@ is_gui_mode = len(sys.argv) == 2 and "-ui" in sys.argv
 _platform_binary_dir = "win" if sys.platform == "win32" else "unix"
 _platform_binary_ext = ".exe" if sys.platform == "win32" else ""
 
+
+# TODO: fix paths
+
 _CONVERTED_FILES_DIR = os.getcwd() + "/converted"
 _BINARY_YTDLP_PATH = os.getcwd(
 ) + f"/binaries/{_platform_binary_dir}/yt-dlp{_platform_binary_ext}"
@@ -18,15 +21,16 @@ _BINARY_FFMPEG_PATH = os.getcwd(
 print("platform " + _BINARY_FFMPEG_PATH, _BINARY_YTDLP_PATH)
 
 # TODO: probuably rename arg
-def download(gui_link = None):
 
+
+def download(gui_link=None):
+
+    if not os.path.exists(_CONVERTED_FILES_DIR):
+        os.mkdir(_CONVERTED_FILES_DIR)
+
+    os.chdir(_CONVERTED_FILES_DIR)
 
     if not is_gui_mode:
-        
-        if not os.path.exists(_CONVERTED_FILES_DIR):
-            os.mkdir(_CONVERTED_FILES_DIR)
-
-        os.chdir(_CONVERTED_FILES_DIR)
 
         if len(sys.argv) < 2:
             print("no url provided")
@@ -36,49 +40,40 @@ def download(gui_link = None):
             link = sys.argv[1]
 
             return subprocess.Popen(
-                f"{_BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {link}".split(' '), stdin=subprocess.PIPE)
+                f"{_BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {link}", stdin=subprocess.PIPE)
+    # gui mode
     else:
-        return subprocess.Popen(
+        print("gui link")
+        print(gui_link)
+
+        if gui_link == None:
+            print("no url provided")
+            print_usage()
+            os._exit(1)
+        else:
+
+            return subprocess.Popen(
                 f"{_BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {gui_link}".split(' '), stdin=subprocess.PIPE)
 
-        
-def convert_mp4_to_mp3(gui_path = None):
-    
-    dir_path = Path(os.getcwd())
+
+def convert_mp4_to_mp3(gui_path=None):
+
+    dir_path = Path(_CONVERTED_FILES_DIR)
     video_extensions = [".wedm", ".mp4", ".mkv",
                         ".flv", ".wmv", ".avi", ".mpg", ".mpeg"]
 
     video_files = [str(item) for item in dir_path.iterdir()
                    if item.suffix in video_extensions]
 
+    print(os.getcwd())
     print(video_files)
 
-    # TODO: output file path from _get_output_filepath
-    print("video_files")
-    print(video_files)
+    _postconvert()
 
-    output_filename = _get_output_filepath(video_files[0])                                       
-    ffmpeg_process_returncode = subprocess.Popen(
-        f"{_BINARY_FFMPEG_PATH} -i {re.escape(video_files[0])} {output_filename}.mp3".split(' '), stdin=subprocess.PIPE)
 
-    _AUDIO_EXTENSION = ".mp3"
-    audio_files = [str(item) for item in dir_path.iterdir()
-                   if item.suffix == _AUDIO_EXTENSION]
-    print("audio_files")
-    print(audio_files)
-    
-    converted_file = audio_files[0]
-    print(converted_file)
-    if gui_path != None:
-        shutil.move(converted_file, gui_path)
-    if not "-k" in sys.argv:
+def _postconvert():
+    print("postconvert executed")
 
-        print(f"removing original file: {video_files[0]} -k to keep")
-        os.remove(video_files[0])
-    else:
-        print(f"keeping original file: {video_files[0]}")
-
-    return ffmpeg_process_returncode
 
 def print_usage():
     print("incorrect usage")
@@ -103,6 +98,7 @@ flags:
 
 def print_error(error):
     print('\033[91m' + error + '\033[0m')
+
 
 def _get_output_filepath(initial_filepath):
     output_filename = sys.argv[2] if len(

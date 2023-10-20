@@ -1,75 +1,82 @@
 import subprocess
+import os
 
 import PySimpleGUI as ui
 
 import lib.gtm as gtm
 
+
 _UI_EVENT_CONVERT = "-CONVERT-"
-_UI_KEY_FOLDER    = "-FOLDER-"
-_UI_KEY_URL       = "-URL-"
-_UI_KEY_LOGGER    = "-LOGGER-"
+_UI_KEY_FOLDER = "-FOLDER-"
+_UI_KEY_URL = "-URL-"
+_UI_KEY_LOGGER = "-LOGGER-"
 
 
 def display_gui():
-    url_row =  [
+    url_row = [
         ui.Text("youtube url to download"),
         ui.In(key=_UI_KEY_URL),
     ],
-    file_row =  [
-               ui.Text("and save file in"),
-               ui.FolderBrowse(_UI_KEY_FOLDER)
+    file_row = [
+        ui.Text("and save file in"),
+        ui.FolderBrowse(_UI_KEY_FOLDER)
     ]
-    
+
     actions_row = [
-            ui.Button("Convert", key=_UI_EVENT_CONVERT)
+        ui.Button("Convert", key=_UI_EVENT_CONVERT)
     ]
 
     logger_row = [
-        ui.Output(size=(50,20), key=_UI_KEY_LOGGER)
+        ui.Output(size=(50, 20), key=_UI_KEY_LOGGER)
     ]
-    
+
     # layout
 
     layout = [
         # 1 row
         url_row,
         # 2 row
-        file_row,      
+        file_row,
         # 3 row
         actions_row,
         # 4 row
-       logger_row
+        logger_row
     ]
 
     # window
     window = ui.Window("gtm", layout, size=(600, 800))
 
-
     # event loop
 
     while True:
-        event, values = window.read() #pyright:ignore
+        event, values = window.read()  # pyright:ignore
         if event == ui.WINDOW_CLOSED:
             break
         elif event == _UI_EVENT_CONVERT:
 
             # download call
-            
-            # try:
-            #     result = gtm.download(values[_UI_KEY_URL])
-            #     if result.returncode != 0:
-            #         print("Subprocess Error:", result.stderr)
-            # except Exception as e:
-            #     print("Call  Error:", e)
 
-            #     # convert call
-                try:
-                    result = gtm.convert_mp4_to_mp3(values[_UI_KEY_FOLDER])
-                    if result.returncode != 0:
-                        print("Subprocess Error:", result.stderr)
-                except Exception as e:
-                    print("Call  Error:", e)
+            try:
+                download_process_result = gtm.download(values[_UI_KEY_URL])
+                if download_process_result.returncode != 0:
+                    print("error downloading file")
+                    os._exit(1)
+                else:
 
-            
+                    convert_process_result = gtm.convert_mp4_to_mp3(
+                        values[_UI_KEY_FOLDER])
+
+            except Exception as e:
+                print("Download Call  Error:", e)
+
+                # convert call
+                # try:
+                #     result = gtm.convert_mp4_to_mp3(values[_UI_KEY_FOLDER])
+                #     if type(result) == subprocess.Popen[bytes] and result.returncode != 0:
+                #         print("Subprocess Error:", result.stderr)
+                # except Exception as e:
+                #     print("Convert Call  Error:", e)
+
+
 def process_test():
     return subprocess.Popen(["echo", "'hello world'"], stdin=subprocess.PIPE)
