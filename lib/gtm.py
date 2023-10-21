@@ -76,9 +76,13 @@ def convert_mp4_to_mp3(gui_path=None):
                    if item.suffix in video_extensions]
     print("file downloaded: ")
     print(video_files[0])
+    # print(re.escape(video_files[0]))
 
+    cmd = [_BINARY_FFMPEG_PATH, "-i", re.escape(video_files[0]), "output.mp3"]
+    print("cmd: ")
+    print(cmd)
     process = subprocess.Popen(
-        f"{_BINARY_FFMPEG_PATH} -i {re.escape(video_files[0])} {re.escape(video_files[0])}.mp3".split(' '), stdin=subprocess.PIPE)
+        cmd, stdin=subprocess.PIPE)
 
     process_code = process.wait()
     if process_code == 0:
