@@ -58,24 +58,12 @@ def display_gui():
 
             try:
                 download_process_result = gtm.download(values[_UI_KEY_URL])
-                if download_process_result != 0:
-                    print(download_process_result.returncode)
+                if download_process_result == 0:
+                    print(download_process_result)
                     print("error downloading file")
-                    # TODO: check via check_downloaded_files in download
                 else:
-
                     convert_process_result = gtm.convert_mp4_to_mp3(
                         values[_UI_KEY_FOLDER])
 
             except Exception as e:
-                print("Download Call  Error:", e)
-
-                # convert call
-                # try:
-                #     result = gtm.convert_mp4_to_mp3(values[_UI_KEY_FOLDER])
-                #     if type(result) == subprocess.Popen[bytes] and result.returncode != 0:
-                #         print("Subprocess Error:", result.stderr)
-                # except Exception as e:
-                #     print("Convert Call  Error:", e)
-
-
+                print("Call  Error:", e)

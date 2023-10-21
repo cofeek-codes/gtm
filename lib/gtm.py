@@ -7,7 +7,7 @@ import os
 
 
 video_extensions = [".wedm", ".mp4", ".mkv",
-                        ".flv", ".wmv", ".avi", ".mpg", ".mpeg"]
+                    ".flv", ".wmv", ".avi", ".mpg", ".mpeg"]
 
 
 is_gui_mode = len(sys.argv) == 2 and "-ui" in sys.argv
@@ -47,7 +47,6 @@ def download(gui_link=None):
             return subprocess.Popen(
                 f"{_BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {link}", stdin=subprocess.PIPE)
 
-          
             # gui mode
     else:
         print("gui link")
@@ -58,29 +57,39 @@ def download(gui_link=None):
             print_usage()
             os._exit(1)
         else:
-
-            return subprocess.Popen(
+            print("attempting to download file...")
+            process = subprocess.Popen(
                 f"{_BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {gui_link}".split(' '), stdin=subprocess.PIPE)
+            process_code = process.wait()
+            print(f"downoad return code: {process_code}")
+            if check_downloaded_files() == 0:
+                print("ERROR: no file were downloaded")
+
+            return check_downloaded_files()
 
 
 def convert_mp4_to_mp3(gui_path=None):
 
     dir_path = Path(_CONVERTED_FILES_DIR)
 
-    
     video_files = [str(item) for item in dir_path.iterdir()
                    if item.suffix in video_extensions]
+    print("file downloaded: ")
+    print(video_files[0])
 
-    
-    print(os.getcwd())
-    print(video_files)
+    process = subprocess.Popen(
+        f"{_BINARY_FFMPEG_PATH} -i {re.escape(video_files[0])} {re.escape(video_files[0])}.mp3".split(' '), stdin=subprocess.PIPE)
 
-    _postconvert()
+    process_code = process.wait()
+    if process_code == 0:
+
+        _postconvert()
+    else:
+        print("error converting file")
 
 
 def _postconvert():
     print("postconvert executed")
-
 
 
 def check_downloaded_files():
@@ -88,12 +97,11 @@ def check_downloaded_files():
 
     global video_extensions
 
-    
     video_files = [str(item) for item in dir_path.iterdir()
                    if item.suffix in video_extensions]
 
-    
     return len(video_files)
+
 
 def print_usage():
     print("incorrect usage")
