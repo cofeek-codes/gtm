@@ -70,13 +70,16 @@ def download(gui_link=None):
 
 def convert_mp4_to_mp3(gui_path=None):
 
+    
+
+    # TODO: check cli mode; clear prints; release v1.1
+    
     dir_path = Path(_CONVERTED_FILES_DIR)
 
     video_files = [str(item) for item in dir_path.iterdir()
                    if item.suffix in video_extensions]
     print("file downloaded: ")
     print(video_files[0])
-    # print(re.escape(video_files[0]))
     shutil.copyfile(video_files[0], "input.mp4")
     cmd = [_BINARY_FFMPEG_PATH, "-i", "input.mp4", "output.mp3"]
     print("cmd: ")
@@ -100,11 +103,16 @@ def _postconvert(original_filename: str):
     print("output filename: ")
     print(output_filename)
     
-    
+    if "-k" in sys.argv:
+        print(f"keeping original file: {original_filename}")
+    else:
+        print(f"removing original file: {original_filename} (pass -k to keep)")
     
     os.remove("input.mp4")
     shutil.copyfile("output.mp3", output_filename)
     os.remove("output.mp3")
+
+    
     print("postconvert executed")
 
 
