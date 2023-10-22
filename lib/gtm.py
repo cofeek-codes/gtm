@@ -77,8 +77,8 @@ def convert_mp4_to_mp3(gui_path=None):
     print("file downloaded: ")
     print(video_files[0])
     # print(re.escape(video_files[0]))
-
-    cmd = [_BINARY_FFMPEG_PATH, "-i", re.escape(video_files[0]), "output.mp3"]
+    shutil.copyfile(video_files[0], "input.mp4")
+    cmd = [_BINARY_FFMPEG_PATH, "-i", "input.mp4", "output.mp3"]
     print("cmd: ")
     print(cmd)
     process = subprocess.Popen(
@@ -87,12 +87,22 @@ def convert_mp4_to_mp3(gui_path=None):
     process_code = process.wait()
     if process_code == 0:
 
-        _postconvert()
+        _postconvert(video_files[0])
     else:
         print("error converting file")
 
 
-def _postconvert():
+def _postconvert(original_filename: str):
+    output_filename = original_filename
+    ofr = output_filename.split('.')
+    ofr[-1] = "mp3"
+    output_filename = ofr.join('.')
+    print("output filename: ")
+
+    print(output_filename)
+    os.remove("input.mp4")
+    shutil.copyfile("output.mp3", output_filename)
+    os.remove("output.mp3")
     print("postconvert executed")
 
 
