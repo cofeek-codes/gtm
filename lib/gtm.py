@@ -94,12 +94,14 @@ def convert_mp4_to_mp3(gui_path=None):
 
 def _postconvert(original_filename: str):
     output_filename = original_filename
-    ofr = output_filename.split('.')
-    ofr[-1] = "mp3"
-    output_filename = ofr.join('.')
+    output_filename_substrings = output_filename.split('.')
+    output_filename_substrings[-1] = "mp3"
+    output_filename = ".".join(output_filename_substrings)
     print("output filename: ")
-
     print(output_filename)
+    
+    
+    
     os.remove("input.mp4")
     shutil.copyfile("output.mp3", output_filename)
     os.remove("output.mp3")
