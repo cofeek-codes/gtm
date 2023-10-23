@@ -49,19 +49,17 @@ def download(gui_link=None):
 
             # gui mode
     else:
-        print("gui link")
-        print(gui_link)
 
         if gui_link == None:
             print("no url provided")
             print_usage()
-            os._exit(1)
         else:
             print("attempting to download file...")
             process = subprocess.Popen(
                 f"{_BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {gui_link}".split(' '), stdin=subprocess.PIPE)
             process_code = process.wait()
-            print(f"downoad return code: {process_code}")
+            process_status = "Success" if process_code == 0 else "Failed"
+            print(f"downoad return status: {process_status}")
             if check_downloaded_files() == 0:
                 print("ERROR: no file were downloaded")
 
