@@ -5,9 +5,11 @@ import subprocess
 import os
 from pathlib import Path
 
+platform = "win/" if sys.platform == "/win32" else "/unix/"
+
 CONVERTED_FILES_DIR = Path(os.getcwd() + "/converted")
-BINARY_YTDLP_PATH   = Path(os.getcwd() + "/binaries/yt-dlp")
-BINARY_FFMPEG_PATH  = Path(os.getcwd() + "/binaries/ffmpeg")
+BINARY_YTDLP_PATH   = Path(os.getcwd() + "/binaries/" + platform + "/yt-dlp")
+BINARY_FFMPEG_PATH  = Path(os.getcwd() + "/binaries/" + platform + "/ffmpeg")
 
 
 def download():
