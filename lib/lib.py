@@ -24,7 +24,7 @@ def download():
         os._exit(1)
     else:
         link = sys.argv[1]
-
+        # TODO: handle errors
         subprocess.call(
             [f"{BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {link}"], shell=True)
 
