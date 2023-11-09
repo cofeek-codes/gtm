@@ -1,16 +1,17 @@
 import sys
 import os
 
-from lib.bootstrap import bootstrap
+from lib.bootstrap import bootstrap, check_bootstrap
 from lib.lib import convert_mp4_to_mp3, download
 
 def main():
-
+        
     bootstrap_return_code = bootstrap()
 
     if bootstrap_return_code != 0:
         print("error bootstrapping project (downloading binaries)")
-    
+        os._exit(1)
+            
     # ui
     if "-ui" in sys.argv:
         if len(sys.argv) == 2:
