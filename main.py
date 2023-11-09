@@ -1,22 +1,18 @@
 import sys
-from ui import ui
-from cli import cli
 
+
+
+from lib.lib import convert_mp4_to_mp3, download
 
 def main():
 
-    is_gui_mode = len(sys.argv) == 2 and "-ui" in sys.argv
-
     # ui
-    if is_gui_mode:
-
-        ui.display_gui()
-
+    if "-ui" in sys.argv:
+        print("ui mode")
     else:
-
         # cli
-        cli.do_cli()
-
+        download()
+        convert_mp4_to_mp3()
 
 if __name__ == "__main__":
     main()
