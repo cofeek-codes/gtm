@@ -6,12 +6,25 @@ from lib.lib import convert_mp4_to_mp3, download
 
 def main():
         
-    bootstrap_return_code = bootstrap()
+    # "bootstrap" command
 
-    if bootstrap_return_code != 0:
-        print("error bootstrapping project (downloading binaries)")
-        os._exit(1)
+    if (len(sys.argv) == 2) and ("bootstrap" in sys.argv or "-b" in sys.argv):
+        if not check_bootstrap():
             
+            bootstrap_return_code = bootstrap()
+
+            if bootstrap_return_code != 0:
+                print("error bootstrapping project (downloading binaries)")
+                os._exit(1)
+            else:
+                print("bootstrap successeful")
+                os._exit(0)
+   
+        else:
+            print("bootstrap is already completed")
+            os._exit(0)
+                
+    
     # ui
     if "-ui" in sys.argv:
         if len(sys.argv) == 2:
