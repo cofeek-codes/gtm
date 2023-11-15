@@ -8,7 +8,7 @@ Usage:
 
 gtm <youtube_url> (optional) <converted_filename> <flags>
 
-converted_filename: (optional) | default "output"
+converted_filename: (optional) | default {filename from url}
 
 flags:
 	-k: keep downloaded mp4 file from deletion
