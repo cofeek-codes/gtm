@@ -29,6 +29,7 @@ def download():
 
 
 def convert_mp4_to_mp3():
+    # TODO: fix renaming if have second argument
     dir_path = Path(os.getcwd())
     video_extensions = [".wedm", ".mp4", ".mkv",
                         ".flv", ".wmv", ".avi", ".mpg", ".mpeg"]
