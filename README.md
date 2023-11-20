@@ -8,8 +8,9 @@ Usage:
 
 gtm <youtube_url> (optional) <converted_filename> <flags>
 
-converted_filename: (optional) | default {filename from url}
+converted_filename: (optional) | default is the name of downloaded video
 
 flags:
 	-k: keep downloaded mp4 file from deletion
+	-ui: enable gui mode
 ```
