@@ -5,11 +5,13 @@ import sys
 import subprocess
 import os
 
-platform = "win/" if sys.platform == "win32" else "unix/"
+platform = "win" if sys.platform == "win32" else "unix"
+extension = ".exe" if sys.platform == "win32" else ""
+
 
 CONVERTED_FILES_DIR = os.path.join(os.getcwd(), "converted")
-BINARY_YTDLP_PATH   = os.path.join(os.getcwd(), "binaries", platform, "yt-dlp")
-BINARY_FFMPEG_PATH  = os.path.join(os.getcwd(), "binaries", platform, "ffmpeg")
+BINARY_YTDLP_PATH   = os.path.join(os.getcwd(), "binaries", platform, f"yt-dlp{extension}")
+BINARY_FFMPEG_PATH  = os.path.join(os.getcwd(), "binaries", platform, f"ffmpeg{extension}")
 
 
 def download():
