@@ -28,7 +28,7 @@ def download():
         link = sys.argv[1]
         # TODO: handle errors
         download_exit_code = subprocess.call(
-            [f"{BINARY_YTDLP_PATH} -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4 {link}"], shell=True)
+            [BINARY_YTDLP_PATH, "-f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4", link], shell=True)
         
         return download_exit_code
 
@@ -43,8 +43,8 @@ def convert_mp4_to_mp3():
 
     print(video_files)
 
-    convert_exit_code =  subprocess.call(
-        [f"{BINARY_FFMPEG_PATH} -i {re.escape(video_files[0])} {re.escape(video_files[0])}.mp3"], shell=True)
+    convert_exit_code = subprocess.call(
+        [BINARY_FFMPEG_PATH, "-i", re.escape(video_files[0]), re.escape(video_files[0]) + ".mp3"], shell=True)
 
 
     if convert_exit_code != 0:
