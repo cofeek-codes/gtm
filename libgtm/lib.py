@@ -4,6 +4,7 @@ from pathlib import Path
 import sys
 import subprocess
 import os
+import libgtm.platfrom
 
 platform = "win" if sys.platform == "win32" else "unix"
 extension = ".exe" if sys.platform == "win32" else ""
@@ -27,9 +28,7 @@ def download():
     else:
         link = sys.argv[1]
         # TODO: handle errors
-        download_exit_code = subprocess.call(
-            [BINARY_YTDLP_PATH, "-f bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4", link], shell=True)
-        
+        download_exit_code = libgtm.platfrom.download_subprocess(binary_path=BINARY_YTDLP_PATH, link=link)
         return download_exit_code
 
 def convert_mp4_to_mp3():
@@ -43,9 +42,7 @@ def convert_mp4_to_mp3():
 
     print(video_files)
 
-    convert_exit_code = subprocess.call(
-        [BINARY_FFMPEG_PATH, "-i", re.escape(video_files[0]), re.escape(video_files[0]) + ".mp3"], shell=True)
-
+    convert_exit_code = libgtm.platfrom.convert_subprocess(BINARY_FFMPEG_PATH, video_files[0])
 
     if convert_exit_code != 0:
         print("error converting video to mp3 file")
