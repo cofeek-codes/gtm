@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import re
 
 def download_subprocess(binary_path, link):
     if sys.platform == "win32":
@@ -16,5 +17,5 @@ def convert_subprocess(binary_path, file):
 
     else:
         return subprocess.call(
-        [f"{binary_path} -i {file} {file}.mp3"], shell=True)
+        [f"{binary_path} -i {re.escape(file)} {re.escape(file)}.mp3"], shell=True)
 
